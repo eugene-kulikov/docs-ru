@@ -2,66 +2,66 @@
 outline: deep
 ---
 
-# Render Functions & JSX {#render-functions-jsx}
+# Render-функции & JSX {#render-functions-jsx}
 
-Vue recommends using templates to build applications in the vast majority of cases. However, there are situations where we need the full programmatic power of JavaScript. That's where we can use the **render function**.
+В подавляющем большинстве случаев Vue рекомендует использовать шаблоны для построения приложений. Однако бывают ситуации, когда нам необходима вся программная мощь JavaScript. Именно в таких случаях мы можем использовать **render-функции**.
 
-> If you are new to the concept of virtual DOM and render functions, make sure to read the [Rendering Mechanism](/guide/extras/rendering-mechanism.html) chapter first.
+> Если вы впервые знакомитесь с концепцией виртуального DOM и функций рендеринга, обязательно прочтите сначала главу [механизмы отрисовки](/guide/extras/rendering-mechanism.html).
 
-## Basic Usage {#basic-usage}
+## Базовое применение {#basic-usage}
 
-### Creating Vnodes {#creating-vnodes}
+### Создание узлов Vnode {#creating-vnodes}
 
-Vue provides an `h()` function for creating vnodes:
+Vue предоставляет функцию `h()` для создания vnode:
 
 ```js
 import { h } from 'vue'
 
 const vnode = h(
-  'div', // type
-  { id: 'foo', class: 'bar' }, // props
+  'div', // тип
+  { id: 'foo', class: 'bar' }, // входные параметры
   [
-    /* children */
+    /* дочерние элементы */
   ]
 )
 ```
 
-`h()` is short for **hyperscript** - which means "JavaScript that produces HTML (hypertext markup language)". This name is inherited from conventions shared by many virtual DOM implementations. A more descriptive name could be `createVnode()`, but a shorter name helps when you have to call this function many times in a render function.
+`h()` это сокращение от **hyperscript**, что означает "JavaScript, создающий HTML (язык гипертекстовой разметки)". Это название унаследовано от соглашений, общих для многих реализаций виртуального DOM. Более описательным именем могло бы быть `createVnode()`, но более короткое имя помогает, когда приходится многократно вызывать эту функцию в функции рендеринга.
 
-The `h()` function is designed to be very flexible:
+Функция `h()` спроектирована очень гибко:
 
 ```js
-// all arguments except the type are optional
+// все аргументы, кроме типа, являются необязательными
 h('div')
 h('div', { id: 'foo' })
 
-// both attributes and properties can be used in props
-// Vue automatically picks the right way to assign it
+// в реквизитах могут использоваться как атрибуты, так и свойства
+// Vue автоматически выбирает правильный способ назначения
 h('div', { class: 'bar', innerHTML: 'hello' })
 
-// props modifiers such as .prop and .attr can be added
-// with '.' and `^' prefixes respectively
+// Модификаторы реквизитов, такие как .prop и .attr, могут быть добавлены
+// с префиксами '.' и `^' соответственно
 h('div', { '.name': 'some-name', '^width': '100' })
 
-// class and style have the same object / array
-// value support that they have in templates
+// класс и стиль имеют ту же поддержку значений
+// объектов / массивов, что и в шаблонах
 h('div', { class: [foo, { bar }], style: { color: 'red' } })
 
-// event listeners should be passed as onXxx
+// слушатели событий должны передаваться как onXxx
 h('div', { onClick: () => {} })
 
-// children can be a string
+// дочерние элементы могут быть строкой
 h('div', { id: 'foo' }, 'hello')
 
-// props can be omitted when there are no props
+// входные параметры могут быть опущены, если они отсутствуют
 h('div', 'hello')
 h('div', [h('span', 'hello')])
 
-// children array can contain mixed vnodes and strings
+// Массив дочерних элементов может содержать смешанные vnodes и строки
 h('div', ['hello', h('span', 'hello')])
 ```
 
-The resulting vnode has the following shape:
+Результирующий vnode имеет следующую форму:
 
 ```js
 const vnode = h('div', { id: 'foo' }, [])
@@ -73,14 +73,14 @@ vnode.key // null
 ```
 
 :::warning Примечание
-The full `VNode` interface contains many other internal properties, but it is strongly recommended to avoid relying on any properties other than the ones listed here. This avoids unintended breakage in case the internal properties are changed.
+Полный интерфейс `VNode` содержит множество других внутренних свойств, но настоятельно рекомендуется не полагаться на какие-либо свойства, кроме перечисленных здесь. Это позволит избежать непредвиденных поломок в случае изменения внутренних свойств.
 :::
 
-### Declaring Render Functions {#declaring-render-functions}
+### Объявление render-функций {#declaring-render-functions}
 
 <div class="composition-api">
 
-When using templates with Composition API, the return value of the `setup()` hook is used to expose data to the template. When using render functions, however, we can directly return the render function instead:
+При использовании шаблонов с Composition API возвращаемое значение хука `setup()` используется для передачи данных шаблону. Однако при использовании функций рендеринга мы можем напрямую возвращать функцию рендеринга:
 
 ```js
 import { ref, h } from 'vue'
@@ -92,20 +92,20 @@ export default {
   setup(props) {
     const count = ref(1)
 
-    // return the render function
+    // возврат render-функции
     return () => h('div', props.msg + count.value)
   }
 }
 ```
 
-The render function is declared inside `setup()` so it naturally has access to the props and any reactive state declared in the same scope.
+Render-функция объявляется внутри `setup()`, поэтому она, естественно, имеет доступ к входным параметрам и любому реактивному состоянию, объявленному в той же области видимости.
 
-In addition to returning a single vnode, you can also return strings or arrays:
+Помимо возврата одного vnode, можно также возвращать строки или массивы:
 
 ```js
 export default {
   setup() {
-    return () => 'hello world!'
+    return () => 'привет мир!'
   }
 }
 ```
@@ -115,7 +115,7 @@ import { h } from 'vue'
 
 export default {
   setup() {
-    // use an array to return multiple root nodes
+    // использование массива для возврата нескольких корневых узлов
     return () => [
       h('div'),
       h('div'),
@@ -126,13 +126,13 @@ export default {
 ```
 
 :::tip Совет
-Make sure to return a function instead of directly returning values! The `setup()` function is called only once per component, while the returned render function will be called multiple times.
+Убедитесь, что вместо прямого возврата значений возвращается функция! Функция `setup()` вызывается только один раз для каждого компонента, в то время как возвращаемая render-функция будет вызвана несколько раз.
 :::
 
 </div>
 <div class="options-api">
 
-We can declare render functions using the `render` option:
+Мы можем объявить render-функцию, используя опцию `render`:
 
 ```js
 import { h } from 'vue'
@@ -140,7 +140,7 @@ import { h } from 'vue'
 export default {
   data() {
     return {
-      msg: 'hello'
+      msg: 'привет'
     }
   },
   render() {
@@ -149,14 +149,14 @@ export default {
 }
 ```
 
-The `render()` function has access to the component instance via `this`.
+Функция `render()` имеет доступ к экземпляру компонента через `this`.
 
-In addition to returning a single vnode, you can also return strings or arrays:
+Помимо возврата одного vnode, можно также возвращать строки или массивы:
 
 ```js
 export default {
   render() {
-    return 'hello world!'
+    return 'привет мир!'
   }
 }
 ```
@@ -166,7 +166,7 @@ import { h } from 'vue'
 
 export default {
   render() {
-    // use an array to return multiple root nodes
+    // использование массива для возврата нескольких корневых узлов
     return [
       h('div'),
       h('div'),
@@ -178,32 +178,32 @@ export default {
 
 </div>
 
-If a render function component doesn't need any instance state, they can also be declared directly as a function for brevity:
+Если компоненту render-функции не требуется состояние экземпляра, то для краткости он может быть объявлен непосредственно как функция:
 
 ```js
 function Hello() {
-  return 'hello world!'
+  return 'привет мир!'
 }
 ```
 
-That's right, this is a valid Vue component! See [Functional Components](#functional-components) for more details on this syntax.
+Все верно, это правильный компонент Vue! Подробнее об этом синтаксисе смотрите в разделе [Функциональные компоненты](#functional-components).
 
-### Vnodes Must Be Unique {#vnodes-must-be-unique}
+### Узлы Vnode должны быть уникальными {#vnodes-must-be-unique}
 
-All vnodes in the component tree must be unique. That means the following render function is invalid:
+Все vnode в дереве компонентов должны быть уникальными. Это означает, что следующая функция рендеринга недопустима:
 
 ```js
 function render() {
   const p = h('p', 'hi')
   return h('div', [
-    // Yikes - duplicate vnodes!
+    // Внимание - дублирование vnodes!
     p,
     p
   ])
 }
 ```
 
-If you really want to duplicate the same element/component many times, you can do so with a factory function. For example, the following render function is a perfectly valid way of rendering 20 identical paragraphs:
+Если вы действительно хотите многократно дублировать один и тот же элемент/компонент, это можно сделать с помощью фабричной функции. Например, следующая render-функция является вполне корректным способом вывода 20 одинаковых абзацев:
 
 ```js
 function render() {
@@ -218,70 +218,70 @@ function render() {
 
 ## JSX / TSX {#jsx-tsx}
 
-[JSX](https://facebook.github.io/jsx/) is an XML-like extension to JavaScript that allows us to write code like this:
+[JSX](https://facebook.github.io/jsx/) - это XML-подобное расширение JavaScript, которое позволяет нам писать подобный код:
 
 ```jsx
-const vnode = <div>hello</div>
+const vnode = <div>привет</div>
 ```
 
-Inside JSX expressions, use curly braces to embed dynamic values:
+Внутри JSX-выражений используйте фигурные скобки для вставки динамических значений:
 
 ```jsx
-const vnode = <div id={dynamicId}>hello, {userName}</div>
+const vnode = <div id={dynamicId}>привет, {userName}</div>
 ```
 
-`create-vue` and Vue CLI both have options for scaffolding projects with pre-configured JSX support. If you are configuring JSX manually, please refer to the documentation of [`@vue/babel-plugin-jsx`](https://github.com/vuejs/jsx-next) for details.
+В `create-vue` и Vue CLI есть опции для создания проектов с предварительно настроенной поддержкой JSX. Если вы настраиваете JSX вручную, обратитесь к документации [`@vue/babel-plugin-jsx`](https://github.com/vuejs/jsx-next) для получения подробной информации.
 
-Although first introduced by React, JSX actually has no defined runtime semantics and can be compiled into various different outputs. If you have worked with JSX before, do note that **Vue JSX transform is different from React's JSX transform**, so you can't use React's JSX transform in Vue applications. Some notable differences from React JSX include:
+Хотя JSX впервые появился в React, на самом деле он не имеет определенной семантики во время выполнения и может быть скомпилирован в различные выходные данные. Если вы уже работали с JSX, обратите внимание, что **преобразование Vue JSX отличается от преобразования React JSX**, поэтому вы не можете использовать преобразование React JSX в приложениях Vue. Некоторые заметные отличия от React JSX включают:
 
-- You can use HTML attributes such as `class` and `for` as props - no need to use `className` or `htmlFor`.
-- Passing children to components (i.e. slots) [works differently](#passing-slots).
+- В качестве реквизитов можно использовать HTML-атрибуты, такие как `class` и `for`, - нет необходимости использовать `className` или `htmlFor`.
+- Передача дочерних элементов компонентам (т.е. слотов) [работает по-другому](#passing-slots).
 
-Vue's type definition also provides type inference for TSX usage. When using TSX, make sure to specify `"jsx": "preserve"` in `tsconfig.json` so that TypeScript leaves the JSX syntax intact for Vue JSX transform to process.
+Определение типов в Vue также обеспечивает вывод типов для использования TSX. При использовании TSX обязательно укажите `"jsx": "preserve"` в `tsconfig.json`, чтобы TypeScript оставлял синтаксис JSX нетронутым для обработки JSX-преобразованием Vue.
 
-## Render Function Recipes {#render-function-recipes}
+## Рецепты render-функций {#render-function-recipes}
 
-Below we will provide some common recipes for implementing template features as their equivalent render functions / JSX.
+Ниже мы приведем несколько общих рецептов реализации шаблонных функций в виде эквивалентных им функций рендеринга / JSX.
 
 ### `v-if` {#v-if}
 
-Template:
+Шаблон:
 
 ```vue-html
 <div>
-  <div v-if="ok">yes</div>
-  <span v-else>no</span>
+  <div v-if="ok">да</div>
+  <span v-else>нет</span>
 </div>
 ```
 
-Equivalent render function / JSX:
+Эквивалентная render-функция рендеринга / JSX:
 
 <div class="composition-api">
 
 ```js
-h('div', [ok.value ? h('div', 'yes') : h('span', 'no')])
+h('div', [ok.value ? h('div', 'да') : h('span', 'нет')])
 ```
 
 ```jsx
-<div>{ok.value ? <div>yes</div> : <span>no</span>}</div>
+<div>{ok.value ? <div>да</div> : <span>нет</span>}</div>
 ```
 
 </div>
 <div class="options-api">
 
 ```js
-h('div', [this.ok ? h('div', 'yes') : h('span', 'no')])
+h('div', [this.ok ? h('div', 'да') : h('span', 'нет')])
 ```
 
 ```jsx
-<div>{this.ok ? <div>yes</div> : <span>no</span>}</div>
+<div>{this.ok ? <div>да</div> : <span>нет</span>}</div>
 ```
 
 </div>
 
 ### `v-for` {#v-for}
 
-Template:
+Шаблон:
 
 ```vue-html
 <ul>
@@ -291,14 +291,14 @@ Template:
 </ul>
 ```
 
-Equivalent render function / JSX:
+Эквивалентная render-функция рендеринга / JSX:
 
 <div class="composition-api">
 
 ```js
 h(
   'ul',
-  // assuming `items` is a ref with array value
+  // предполагается, что `items` - это ссылка со значением массива
   items.value.map(({ id, text }) => {
     return h('li', { key: id }, text)
   })
@@ -337,7 +337,7 @@ h(
 
 ### `v-on` {#v-on}
 
-Props with names that start with `on` followed by an uppercase letter are treated as event listeners. For example, `onClick` is the equivalent of `@click` in templates.
+Реквизиты с именами, начинающимися с `on`, за которым следует заглавная буква, рассматриваются как слушатели событий. Например, `onClick` является эквивалентом `@click` в шаблонах.
 
 ```js
 h(
@@ -347,7 +347,7 @@ h(
       /* ... */
     }
   },
-  'click me'
+  'нажми на меня'
 )
 ```
 
@@ -357,26 +357,26 @@ h(
     /* ... */
   }}
 >
-  click me
+  нажми на меня
 </button>
 ```
 
-#### Event Modifiers {#event-modifiers}
+#### Модификаторы событий {#event-modifiers}
 
-For the `.passive`, `.capture`, and `.once` event modifiers, they can be concatenated after the event name using camelCase.
+Для модификаторов событий `.passive`, `.capture`, и `.once` они могут быть объединены после имени события с использованием camelCase.
 
-For example:
+Например:
 
 ```js
 h('input', {
   onClickCapture() {
-    /* listener in capture mode */
+    /* слушатель в режиме захвата */
   },
   onKeyupOnce() {
-    /* triggers only once */
+    /* срабатывает только один раз */
   },
   onMouseoverOnceCapture() {
-    /* once + capture */
+    /* один раз + захват */
   }
 })
 ```
@@ -389,7 +389,7 @@ h('input', {
 />
 ```
 
-For other event and key modifiers, the [`withModifiers`](/api/render-function.html#withmodifiers) helper can be used:
+Для других модификаторов событий и клавиш можно использовать помощник [`withModifiers`](/api/render-function.html#withmodifiers):
 
 ```js
 import { withModifiers } from 'vue'
@@ -403,9 +403,9 @@ h('div', {
 <div onClick={withModifiers(() => {}, ['self'])} />
 ```
 
-### Components {#components}
+### Компоненты {#components}
 
-To create a vnode for a component, the first argument passed to `h()` should be the component definition. This means when using render functions, it is unnecessary to register components - you can just use the imported components directly:
+Чтобы создать vnode для компонента, первым аргументом, передаваемым в `h()`, должно быть определение компонента. Это означает, что при использовании render-функций нет необходимости регистрировать компоненты - можно просто использовать импортированные компоненты напрямую:
 
 ```js
 import Foo from './Foo.vue'
@@ -427,9 +427,9 @@ function render() {
 }
 ```
 
-As we can see, `h` can work with components imported from any file format as long as it's a valid Vue component.
+Как мы видим, `h` может работать с компонентами, импортированными из файлов любого формата, если это корректный компонент Vue.
 
-Dynamic components are straightforward with render functions:
+Динамические компоненты прямолинейны с помощью render-функций:
 
 ```js
 import Foo from './Foo.vue'
@@ -446,24 +446,24 @@ function render() {
 }
 ```
 
-If a component is registered by name and cannot be imported directly (for example, globally registered by a library), it can be programmatically resolved by using the [`resolveComponent()`](/api/render-function.html#resolvecomponent) helper.
+Если компонент зарегистрирован по имени и не может быть импортирован напрямую (например, глобально зарегистрирован библиотекой), он может быть программно разрешен с помощью помощника [`resolveComponent()`](/api/render-function.html#resolvecomponent).
 
-### Rendering Slots {#rendering-slots}
+### Слоты рендеринга {#rendering-slots}
 
 <div class="composition-api">
 
-In render functions, slots can be accessed from the `setup()` context. Each slot on the `slots` object is a **function that returns an array of vnodes**:
+В render-функциях доступ к слотам осуществляется из контекста `setup()`. Каждый слот объекта `slots` представляет собой **функцию, возвращающую массив vnodes**:
 
 ```js
 export default {
   props: ['message'],
   setup(props, { slots }) {
     return () => [
-      // default slot:
+      // слот по умолчанию:
       // <div><slot /></div>
       h('div', slots.default()),
 
-      // named slot:
+      // именованный слот:
       // <div><slot name="footer" :text="message" /></div>
       h(
         'div',
@@ -476,20 +476,20 @@ export default {
 }
 ```
 
-JSX equivalent:
+JSX эквивалент:
 
 ```jsx
-// default
+// по умолчанию
 <div>{slots.default()}</div>
 
-// named
+// именованный
 <div>{slots.footer({ text: props.message })}</div>
 ```
 
 </div>
 <div class="options-api">
 
-In render functions, slots can be accessed from [`this.$slots`](/api/component-instance.html#slots):
+В render-функциях доступ к слотам можно получить из [`this.$slots`](/api/component-instance.html#slots):
 
 ```js
 export default {
@@ -511,7 +511,7 @@ export default {
 }
 ```
 
-JSX equivalent:
+JSX эквивалент:
 
 ```jsx
 // <div><slot /></div>
@@ -523,43 +523,43 @@ JSX equivalent:
 
 </div>
 
-### Passing Slots {#passing-slots}
+### Передача слотов {#passing-slots}
 
-Passing children to components works a bit differently from passing children to elements. Instead of an array, we need to pass either a slot function, or an object of slot functions. Slot functions can return anything a normal render function can return - which will always be normalized to arrays of vnodes when accessed in the child component.
+Передача дочерних элементов компонентам работает несколько иначе, чем передача дочерних элементов элементам. Вместо массива нам нужно передать либо слот-функцию, либо объект слот-функции. Слот-функции могут возвращать все, что может вернуть обычная render-функция, которые при обращении к дочернему компоненту всегда будут нормализованы к массивам vnodes.
 
 ```js
-// single default slot
-h(MyComponent, () => 'hello')
+// единственный слот по умолчанию
+h(MyComponent, () => 'привет')
 
-// named slots
-// notice the `null` is required to avoid
-// the slots object being treated as props
+// именованные слоты
+// обратите внимание, что `null` требуется для того, чтобы избежать
+// того, чтобы объект слотов не рассматривался как props
 h(MyComponent, null, {
-  default: () => 'default slot',
+  default: () => 'слот по умолчанию',
   foo: () => h('div', 'foo'),
-  bar: () => [h('span', 'one'), h('span', 'two')]
+  bar: () => [h('span', 'один'), h('span', 'два')]
 })
 ```
 
-JSX equivalent:
+JSX эквивалент:
 
 ```jsx
-// default
-<MyComponent>{() => 'hello'}</MyComponent>
+// по умолчанию
+<MyComponent>{() => 'привет'}</MyComponent>
 
 // named
 <MyComponent>{{
-  default: () => 'default slot',
+  default: () => 'слот по умолчанию',
   foo: () => <div>foo</div>,
-  bar: () => [<span>one</span>, <span>two</span>]
+  bar: () => [<span>один</span>, <span>два</span>]
 }}</MyComponent>
 ```
 
-Passing slots as functions allows them to be invoked lazily by the child component. This leads to the slot's dependencies being tracked by the child instead of the parent, which results in more accurate and efficient updates.
+Передача слотов в виде функций позволяет дочернему компоненту лениво вызывать их. Это приводит к тому, что зависимости слота отслеживаются дочерним компонентом, а не родительским, что обеспечивает более точное и эффективное обновление.
 
-### Built-in Components {#built-in-components}
+### Встроенные компоненты {#built-in-components}
 
-[Built-in components](/api/built-in-components.html) such as `<KeepAlive>`, `<Transition>`, `<TransitionGroup>`, `<Teleport>` and `<Suspense>` must be imported for use in render functions:
+[Встроенные компоненты](/api/built-in-components.html) такие как `<KeepAlive>`, `<Transition>`, `<TransitionGroup>`, `<Teleport>` и `<Suspense>` должны быть импортированы для использования в render-функциях:
 
 <div class="composition-api">
 
@@ -590,7 +590,7 @@ export default {
 
 ### `v-model` {#v-model}
 
-The `v-model` directive is expanded to `modelValue` and `onUpdate:modelValue` props during template compilation—we will have to provide these props ourselves:
+При компиляции шаблона директива `v-model` расширяется до реквизитов `modelValue` и `onUpdate:modelValue` - нам придется предоставить эти реквизиты самостоятельно:
 
 <div class="composition-api">
 
@@ -626,14 +626,14 @@ export default {
 
 </div>
 
-### Custom Directives {#custom-directives}
+### Пользовательские директивы {#custom-directives}
 
-Custom directives can be applied to a vnode using [`withDirectives`](/api/render-function.html#withdirectives):
+Пользовательские директивы могут быть применены к узлу vnode с помощью функции [`withDirectives`](/api/render-function.html#withdirectives):
 
 ```js
 import { h, withDirectives } from 'vue'
 
-// a custom directive
+// собственная директива
 const pin = {
   mounted() { /* ... */ },
   updated() { /* ... */ }
@@ -645,17 +645,17 @@ const vnode = withDirectives(h('div'), [
 ])
 ```
 
-If the directive is registered by name and cannot be imported directly, it can be resolved using the [`resolveDirective`](/api/render-function.html#resolvedirective) helper.
+Если директива зарегистрирована по имени и не может быть импортирована напрямую, она может быть разрешена с помощью помощника [`resolveDirective`](/api/render-function.html#resolvedirective).
 
-## Functional Components {#functional-components}
+## Функциональные компоненты {#functional-components}
 
-Functional components are an alternative form of component that don't have any state of their own. They act like pure functions: props in, vnodes out. They are rendered without creating a component instance (i.e. no `this`), and without the usual component lifecycle hooks.
+Функциональные компоненты - это альтернативная форма компонентов, не имеющая собственного состояния. Они действуют как чистые функции: props in, vnodes out. Они отображаются без создания экземпляра компонента (т.е. без this) и без обычных хуков жизненного цикла компонента.
 
-To create a functional component we use a plain function, rather than an options object. The function is effectively the `render` function for the component.
+Для создания функционального компонента мы используем не объект options, а обычную функцию. Функция фактически является `render` функцией для компонента.
 
 <div class="composition-api">
 
-The signature of a functional component is the same as the `setup()` hook:
+Сигнатура функционального компонента совпадает с сигнатурой хука `setup()`:
 
 ```js
 function MyComponent(props, { slots, emit, attrs }) {
@@ -666,7 +666,7 @@ function MyComponent(props, { slots, emit, attrs }) {
 </div>
 <div class="options-api">
 
-As there is no `this` reference for a functional component, Vue will pass in the `props` as the first argument:
+Поскольку для функционального компонента не существует ссылки `this`, Vue передает в качестве первого аргумента `props`:
 
 ```js
 function MyComponent(props, context) {
@@ -674,23 +674,23 @@ function MyComponent(props, context) {
 }
 ```
 
-The second argument, `context`, contains three properties: `attrs`, `emit`, and `slots`. These are equivalent to the instance properties [`$attrs`](/api/component-instance.html#attrs), [`$emit`](/api/component-instance.html#emit), and [`$slots`](/api/component-instance.html#slots) respectively.
+Второй аргумент, `context`, содержит три свойства: `attrs`, `emit`, и `slots`. Они эквивалентны свойствам экземпляра [`$attrs`](/api/component-instance.html#attrs), [`$emit`](/api/component-instance.html#emit), и [`$slots`](/api/component-instance.html#slots) соответственно.
 
 </div>
 
-Most of the usual configuration options for components are not available for functional components. However, it is possible to define [`props`](/api/options-state.html#props) and [`emits`](/api/options-state.html#emits) by adding them as properties:
+Большинство обычных опций конфигурации компонентов недоступны для функциональных компонентов. Однако можно определить [`props`](/api/options-state.html#props) и [`emits`](/api/options-state.html#emits), добавив их в качестве свойств:
 
 ```js
 MyComponent.props = ['value']
 MyComponent.emits = ['click']
 ```
 
-If the `props` option is not specified, then the `props` object passed to the function will contain all attributes, the same as `attrs`. The prop names will not be normalized to camelCase unless the `props` option is specified.
+Если опция `props` не указана, то объект`props`, передаваемый в функцию, будет содержать все атрибуты, как и `attrs`. Имена реквизитов не будут нормализованы к camelCase, если не указана опция `props`.
 
-For functional components with explicit `props`, [attribute fallthrough](/guide/components/attrs.html) works much the same as with normal components. However, for functional components that don't explicitly specify their `props`, only the `class`, `style`, and `onXxx` event listeners will be inherited from the `attrs` by default. In either case, `inheritAttrs` can be set to `false` to disable attribute inheritance:
+Для функциональных компонентов с явными `props`, [наследование атрибутов](/guide/components/attrs.html) работает так же, как и для обычных компонентов. Однако для функциональных компонентов, не имеющих явных `props`, по умолчанию от `attrs` наследуются только `class`, `style`, и слушатели событий `onXxx`. В любом случае для `inheritAttrs` можно установить значение `false`, чтобы отключить наследование атрибутов:
 
 ```js
 MyComponent.inheritAttrs = false
 ```
 
-Functional components can be registered and consumed just like normal components. If you pass a function as the first argument to `h()`, it will be treated as a functional component.
+Функциональные компоненты могут быть зарегистрированы и использованы так же, как и обычные компоненты. Если вы передадите функцию в качестве первого аргумента функции `h()`, она будет рассматриваться как функциональный компонент.
