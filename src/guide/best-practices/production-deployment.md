@@ -1,44 +1,44 @@
-# Production Deployment {#production-deployment}
+# Публикация на Production {#production-deployment}
 
-## Development vs. Production {#development-vs-production}
+## Разработка vs. Production {#development-vs-production}
 
-During development, Vue provides a number of features to improve the development experience:
+В процессе разработки, Vue предоставляет ряд возможностей для улучшения её процесса:
 
-- Warning for common errors and pitfalls
-- Props / events validation
-- [Reactivity debugging hooks](/guide/extras/reactivity-in-depth.html#reactivity-debugging)
-- Devtools integration
+- Предупреждения для частых ошибок и "подводных камней"
+- Валидация пропсов / событий
+- [Хуки для отладки реактивности](/guide/extras/reactivity-in-depth.html#reactivity-debugging)
+- Интеграция инструментов разработки
 
-However, these features become useless in production. Some of the warning checks can also incur a small amount of performance overhead. When deploying to production, we should drop all the unused, development-only code branches for smaller payload size and better performance.
+Однако эти возможности становятся бесполезными в production. Некоторые из проверок предупреждений также могут вызывать небольшие накладные расходы на производительность.
 
-## Without Build Tools {#without-build-tools}
+## Без инструментов сборки {#without-build-tools}
 
-If you are using Vue without a build tool by loading it from a CDN or self-hosted script, make sure to use the production build (dist files that end in `.prod.js`) when deploying to production. Production builds are pre-minified with all development-only code branches removed.
+Если вы используете Vue без инструмента сборки загружая его из CDN, либо из самостоятельного сценария, убедитесь, что используете production сборку (выходные файлы, что заканчиваются на `.prod.js`) во время внедрения в production. Production сборки предварительно минифицируются, из них удаляются все ветки кода, предназначенные только для разработки.
 
-- If using global build (accessing via the `Vue` global): use `vue.global.prod.js`.
-- If using ESM build (accessing via native ESM imports): use `vue.esm-browser.prod.js`.
+- При использовании глобальной сборки (получая доступ через глобальный `Vue`): используйте `vue.global.prod.js`
+- При использовании ESM сборки (получая доступ через нативные ESM импорты): используйте `vue.esm-browser.prod.js` 
 
-Consult the [dist file guide](https://github.com/vuejs/core/tree/main/packages/vue#which-dist-file-to-use) for more details.
+Более подробную информацию можно найти в [руководстве по выходным файлам](https://github.com/vuejs/core/tree/main/packages/vue#which-dist-file-to-use) 
 
-## With Build Tools {#with-build-tools}
+## С инструментами сборки {#with-build-tools}
 
-Projects scaffolded via `create-vue` (based on Vite) or Vue CLI (based on webpack) are pre-configured for production builds.
+Проекты собранные через `create-vue` (на базе Vite) или Vue CLI (на базе webpack) предварительно конфигурируются для production сборок. 
 
-If using a custom setup, make sure that:
+При использовании пользовательской настройки, убедитесь, что:
 
-1. `vue` resolves to `vue.runtime.esm-bundler.js`.
-2. The [compile time feature flags](https://github.com/vuejs/core/tree/main/packages/vue#bundler-build-feature-flags) are properly configured.
-3. <code>process.env<wbr>.NODE_ENV</code> is replaced with `"production"` during build.
+1. `vue` разрешается к `vue.runtime.esm-bundler.js`.
+2. [Флаги функций времени компиляции](https://github.com/vuejs/core/tree/main/packages/vue#bundler-build-feature-flags) настроены правильно.
+3. <code>process.env<wbr>.NODE_ENV</code> заменён на `"production"` во время сборки.
 
-Additional references:
+Дополнительные ссылки:
 
-- [Vite production build guide](https://vitejs.dev/guide/build.html)
-- [Vite deployment guide](https://vitejs.dev/guide/static-deploy.html)
-- [Vue CLI deployment guide](https://cli.vuejs.org/guide/deployment.html)
+- [Руководство по production сборке Vite](https://vitejs.dev/guide/build.html)
+- [Руководство по развёртыванию через Vite](https://vitejs.dev/guide/static-deploy.html)
+- [Руководство по развёртыванию через Vue CLI](https://cli.vuejs.org/guide/deployment.html)
 
-## Tracking Runtime Errors {#tracking-runtime-errors}
+## Отслеживание ошибок среды выполнения {#tracking-runtime-errors}
 
-The [app-level error handler](/api/application.html#app-config-errorhandler) can be used to report errors to tracking services:
+[Обработчик ошибок на уровне приложения](/api/application.html#app-config-errorhandler) может быть использован для сообщения об ошибках службам отслеживания:
 
 ```js
 import { createApp } from 'vue'
@@ -46,8 +46,8 @@ import { createApp } from 'vue'
 const app = createApp(...)
 
 app.config.errorHandler = (err, instance, info) => {
-  // report error to tracking services
+  // сообщить об ошибке службам отслеживания
 }
 ```
 
-Services such as [Sentry](https://docs.sentry.io/platforms/javascript/guides/vue/) and [Bugsnag](https://docs.bugsnag.com/platforms/javascript/vue/) also provide official integrations for Vue.
+Службы такие как [Sentry](https://docs.sentry.io/platforms/javascript/guides/vue/) и [Bugsnag](https://docs.bugsnag.com/platforms/javascript/vue/) также предоставляют свои официальные интеграции для Vue.
